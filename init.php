@@ -10,10 +10,9 @@
  * @package  Samz/recalculaator
  * @author   Samer Alotabi <sam.otb@hotmail.ca>
  * @license  MIT 
- * @link     http://url.com
+ * @link     https://github.com/Samz851
  */
- 
- $msg = ' ';
+
  /**
   * The init function to alter database on plugin activation
   *
@@ -41,7 +40,7 @@ register_activation_hook(__FILE__, 'Samz_Options_install');
 
 add_action('admin_notices', 'Samz_Admin_notice__info');
 /**
- * Function to add Alert Notices to admin panel
+ * Function to add Alert Notices to admin panel on plugin activation
  * 
  * @return void
  */
@@ -63,6 +62,7 @@ function Samz_Admin_notice__info()
         delete_transient('samz-admin-notice-activation');
     }
 }
+
 /**
  * Function to add action to order actions dropdown menu in order page
  * 
@@ -126,6 +126,11 @@ function apply_tax_inclusive_calculations($order)
 add_action( 'woocommerce_order_action_wc_custom_order_action', 
 'apply_tax_inclusive_calculations');
 
+/**
+ * Function to add Admin Notice to Order page
+ * 
+ * @return void
+ */
 function Samz_Admin_notice__order()
 {
     if(get_transient( 'samz-admin-notice-error' ))
@@ -151,35 +156,3 @@ function Samz_Admin_notice__order()
     }
 }
     add_action('admin_notices', 'Samz_Admin_notice__order');
-
-//menu items
-// add_action('admin_menu','sinetiks_schools_modifymenu');
-// function sinetiks_schools_modifymenu() {
-////this is the main item for the menu
-// add_menu_page('Schools', //page title
-// 'Schools', //menu title
-// 'manage_options', //capabilities
-// 'sinetiks_schools_list', //menu slug
-// 'sinetiks_schools_list' //function
-// );
-
-// //this is a submenu
-// add_submenu_page('sinetiks_schools_list', //parent slug
-// 'Add New School', //page title
-// 'Add New', //menu title
-// 'manage_options', //capability
-// 'sinetiks_schools_create', //menu slug
-// 'sinetiks_schools_create'); //function
-
-// //this submenu is HIDDEN, however, we need to add it anyways
-// add_submenu_page(null, //parent slug
-// 'Update School', //page title
-// 'Update', //menu title
-// 'manage_options', //capability
-// 'sinetiks_schools_update', //menu slug
-// 'sinetiks_schools_update'); //function
-// }
-// define('ROOTDIR', plugin_dir_path(__FILE__));
-// require_once(ROOTDIR . 'schools-list.php');
-// require_once(ROOTDIR . 'schools-create.php');
-// require_once(ROOTDIR . 'schools-update.php');
