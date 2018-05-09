@@ -89,18 +89,36 @@ add_action('woocommerce_order_actions', 'Samz_Woocommerce_Order_actions');
 function apply_tax_inclusive_calculations($order)
 {
     global $wpdb;
+
     $table_name = $wpdb->prefix . "wcmp_vendor_orders";
+
+    $postmeta_table = "wp_postmeta";
+
     $order_id = $order->get_id();
-    $_sql = " UPDATE $table_name
+
+    $row = $wpdb->get_row('SELECT * FROM ' . $table_name .
+    ' WHERE order_id = ' . $order_id);
+
+    $wcmp_sql = " UPDATE $table_name
     SET shipping = ROUND(shipping * 0.9, 2) ,
     tax= ROUND(tax * 0.9, 2),
     shipping_tax_amount = ROUND(shipping_tax_amount * 0.9, 2),recalculated = 1
     WHERE order_id = " . $order_id;
-    $row = $wpdb->get_row('SELECT * FROM ' . $table_name .
-    ' WHERE order_id = ' . $order_id);
+
     if ($row->commission_id > 0 && $row->recalculated == 0){
-        $wpdb->query($_sql);
-        set_transient('samz-admin-notice-success', true, 5);
+        $id = $row->commission_id;
+        $wpdb->query($wcmp_sql);
+        if(metadata_exists( 'post', $id, '_recalculated') == false){
+            $shipping = get_post_meta($id, '_shipping', true);
+            $tax = get_post_meta($id, '_tax', true);
+            update_post_meta($id, '_recalculated',1);
+            update_post_meta($id, '_shipping', $shipping * 0.9);
+            update_post_meta($id, '_tax', $tax * 0.9);
+
+            set_transient('samz-admin-notice-success', true, 5);
+        } else {
+            set_transient('samz-admin-notice-success', true, 5);
+        }
     } else {
         set_transient('samz-admin-notice-error', true, 5);
     }
