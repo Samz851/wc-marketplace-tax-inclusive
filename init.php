@@ -92,7 +92,7 @@ function apply_tax_inclusive_calculations($order)
 
     $table_name = $wpdb->prefix . "wcmp_vendor_orders";
 
-    $postmeta_table = "wp_postmeta";
+    $postmeta_table = $wpdb->prefix . "postmeta";
 
     $order_id = $order->get_id();
 
